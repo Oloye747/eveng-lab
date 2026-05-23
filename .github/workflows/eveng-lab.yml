@@ -1,6 +1,7 @@
 name: EVE-NG Lab CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
   pull_request:
@@ -10,7 +11,7 @@ jobs:
   lab-test:
     runs-on: self-hosted
 
-    defaults:
+    defaults:s
       run:
         working-directory: .
 
@@ -50,10 +51,5 @@ jobs:
       - name: Terraform Output
         run: terraform output
 
-      - name: Terraform Destroy
-        if: always()
-        run: terraform destroy -auto-approve
-        env:
-          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
-          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
-          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+      
+      
