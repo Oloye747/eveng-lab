@@ -1,0 +1,59 @@
+name: EVE-NG Lab CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lab-test:
+    runs-on: self-hosted
+
+    defaults:
+      run:
+        working-directory: .
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      - name: Terraform Init
+        run: terraform init
+        env:
+          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
+          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
+          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -no-color
+        env:
+          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
+          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
+          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        env:
+          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
+          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
+          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+
+      - name: Terraform Output
+        run: terraform output
+
+      - name: Terraform Destroy
+        if: always()
+        run: terraform destroy -auto-approve
+        env:
+          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
+          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
+          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
