@@ -11,7 +11,7 @@ jobs:
   lab-test:
     runs-on: self-hosted
 
-    defaults:s
+    defaults:
       run:
         working-directory: .
 
@@ -50,6 +50,3 @@ jobs:
 
       - name: Terraform Output
         run: terraform output
-
-      
-      
