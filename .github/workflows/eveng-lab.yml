@@ -10,10 +10,20 @@ on:
 jobs:
   lab-test:
     runs-on: self-hosted
+    timeout-minutes: 60
 
     defaults:
       run:
-        working-directory: .
+        shell: pwsh
+        working-directory:.
+
+    env:
+      TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
+      TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
+      TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+      TF_INPUT: "false"
+      TF_IN_AUTOMATION: "true"
+      TF_LOG: INFO
 
     steps:
       - name: Checkout
@@ -23,30 +33,42 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.7.0
+          terraform_wrapper: false
+
+      - name: Debug DNS
+        run: |
+          Write-Host "DNS client configuration."
+          Get-DnsClientServerAddress | Format-Table -AutoSize
+          Write-Host "Lookup github.com with Google DNS"
+          nslookup github.com 8.8.8.8
+          Write-Host "Lookup broker.actions.githubusercontent.com with Cloudflare DNS"
+          nslookup broker.actions.githubusercontent.com 1.1.1.1
+          Write-Host "Lookup registry.terraform.io with Google DNS."
+          nslookup registry.terraform.io 8.8.8.8
+
+      - name: Debug connectivity
+        run: |
+          Write-Host "Testing GitHub Actions broker over 443."
+          Test-NetConnection broker.actions.githubusercontent.com -Port 443
+          Write-Host "Testing Terraform Registry over 443"
+          Test-NetConnection registry.terraform.io -Port 443
+          Write-Host "Testing EVE-NG host over 443."
+          Test-NetConnection $env:TF_VAR_eveng_host -Port 443
+
+      - name: Terraform Version
+        run: terraform version
 
       - name: Terraform Init
-        run: terraform init
-        env:
-          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
-          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
-          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+        run: terraform init -input=false -no-color
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -no-color
-        env:
-          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
-          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
-          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+        run: terraform plan -input=false -no-color -out=tfplan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
-        env:
-          TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
-          TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
-          TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+        run: terraform apply -input=false -auto-approve -no-color tfplan
 
       - name: Terraform Output
-        run: terraform output
+        run: terraform output -no-color
