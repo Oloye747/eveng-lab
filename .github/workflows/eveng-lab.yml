@@ -21,11 +21,14 @@ jobs:
       TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
       TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
       TF_VAR_eveng_password: ${{ secrets.EVE_PASSWORD }}
+      EVE_HOST: ${{ secrets.EVE_HOST }}
+      EVE_USERNAME: ${{ secrets.EVE_USERNAME }}
+      EVE_PASSWORD: ${{ secrets.EVE_PASSWORD }}
       TF_INPUT: "false"
       TF_IN_AUTOMATION: "true"
       TF_LOG: INFO
-    steps:
 
+    steps:
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -34,25 +37,6 @@ jobs:
         with:
           terraform_version: 1.7.0
           terraform_wrapper: false
-
-      - name: Debug DNS
-        run: |
-          Write-Host "DNS client configuration."
-          Get-DnsClientServerAddress | Format-Table -AutoSize
-          Write-Host "Lookup github.com with Google DNS"
-          nslookup github.com 8.8.8.8
-          Write-Host "Lookup broker.actions.githubusercontent.com with Cloudflare DNS"
-
-          nslookup broker.actions.githubusercontent.com 1.1.1.1
-          Write-Host "Lookup registry.terraform.io with Google DNS"
-          nslookup registry.terraform.io 8.8.8.8
-
-      - name: Debug connectivity
-        run: |
-          Write-Host "Testing GitHub Actions broker over 443"
-          Test-NetConnection broker.actions.githubusercontent.com -Port 443
-          Write-Host "Testing Terraform Registry over 443"
-          Test-NetConnection registry.terraform.io -Port 443
 
       - name: Terraform Version
         run: terraform version
