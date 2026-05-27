@@ -37,7 +37,3 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false -no-color
         shell: powershell
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false -no-color
-        shell: powershell
