@@ -7,12 +7,6 @@ jobs:
   deploy:
     runs-on: [self-hosted, Windows, X64]
 
-
-    defaults:
-      run:
-        shell: pwsh
-        working-directory: .
-
     env:
       TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
       TF_VAR_eveng_username: ${{ secrets.EVE_USERNAME }}
@@ -29,12 +23,16 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        shell: powershell
 
       - name: Terraform Validate
         run: terraform validate
+        shell: powershell
 
       - name: Terraform Plan
         run: terraform plan -input=false
+        shell: powershell
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false
+        shell: powershell
