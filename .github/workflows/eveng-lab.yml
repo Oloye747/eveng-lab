@@ -6,6 +6,7 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, Windows, X64]
+    timeout-minutes: 15
 
     env:
       TF_VAR_eveng_host: ${{ secrets.EVE_HOST }}
@@ -21,18 +22,22 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Terraform Version
+        run: terraform version
+        shell: powershell
+
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -no-color
         shell: powershell
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform validate -no-color
         shell: powershell
 
       - name: Terraform Plan
-        run: terraform plan -input=false
+        run: terraform plan -input=false -no-color
         shell: powershell
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+        run: terraform apply -auto-approve -input=false -no-color
         shell: powershell
