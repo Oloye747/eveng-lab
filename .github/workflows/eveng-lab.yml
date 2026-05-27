@@ -5,7 +5,8 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, windows, eveng]
+    runs-on: [self-hosted, Windows, X64]
+
 
     defaults:
       run:
