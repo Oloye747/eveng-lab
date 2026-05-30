@@ -1,7 +1,5 @@
 resource "eveng_lab" "this" {
-  name   = var.lab_name
-  author = var.lab_author
-  body   = "Managed by Terraform. Do not edit manually."
+  name = "Enterprise-Core-Lab"
 }
 
 resource "eveng_network" "mgmt" {
