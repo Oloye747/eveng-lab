@@ -3,4 +3,9 @@
 *.tfstate.*
 crash.log
 terraform.tfvars
+*.auto.tfvars
 terraform-provider-eveng*.exe
+*.backup
+.DS_Store
+Thumbs.db
+.vscode/
