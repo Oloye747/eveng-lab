@@ -38,3 +38,11 @@ resource "eveng_network" "app" {
   top      = 320
   left     = 100
 }
+resource "eveng_network" "security" {
+  lab_path = eveng_lab.this.path
+  name     = "security"
+  type     = "bridge"
+  icon     = "01-Cloud-Default.svg"
+  top      = 420
+  left     = 100
+}
