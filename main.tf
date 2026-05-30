@@ -30,3 +30,11 @@ resource "eveng_network" "user" {
   top      = 220
   left     = 100
 }
+resource "eveng_network" "app" {
+  lab_path = eveng_lab.this.path
+  name     = "app"
+  type     = "bridge"
+  icon     = "01-Cloud-Default.svg"
+  top      = 320
+  left     = 100
+}
