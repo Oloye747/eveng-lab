@@ -21,3 +21,12 @@ resource "eveng_network" "lan_core" {
   top      = 100
   left     = 100
 }
+
+resource "eveng_network" "user" {
+  lab_path = eveng_lab.this.path
+  name     = "user"
+  type     = "bridge"
+  icon     = "01-Cloud-Default.svg"
+  top      = 220
+  left     = 100
+}
