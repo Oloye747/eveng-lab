@@ -25,4 +25,10 @@ resource "eveng_node_link" "router2_security" {
   source_port    = "Gi3"
 }
 
+resource "eveng_node_link" "router2_user" {
+  lab_path       = eveng_lab.this.path
+  network_id     = eveng_network.user.id
+  source_node_id = eveng_node.router2.id
+  source_port    = "Gi4"
+}
 
